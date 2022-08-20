@@ -300,6 +300,26 @@ const continueIfHandler = action => {
   }
 }
 
+const notificationIcons = {
+  "info": "Info",
+  "error": "Alert",
+  "warning": "Alert",
+  "success": "CheckmarkCircle"
+}
+
+const showNotificationHandler = async action => {
+  const { message = "", type = "warning", defaultIcon = true, autoDismiss, icon } = action.parameters
+  if (type) {
+    try {
+      const useIcon = defaultIcon ? notificationIcons[type] : icon
+      notificationStore.actions.send(message, type, useIcon, autoDismiss)
+    } catch (error) {
+      // Abort next actions
+      return false
+    }
+  }
+}
+
 const handlerMap = {
   ["Save Row"]: saveRowHandler,
   ["Duplicate Row"]: duplicateRowHandler,
@@ -318,6 +338,7 @@ const handlerMap = {
   ["Upload File to S3"]: s3UploadHandler,
   ["Export Data"]: exportDataHandler,
   ["Continue if / Stop if"]: continueIfHandler,
+  ["Show Notification"]: showNotificationHandler,
 }
 
 const confirmTextMap = {
